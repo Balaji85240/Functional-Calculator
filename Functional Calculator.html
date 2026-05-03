@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Functional Calculator</title>
+    <style>
+        :root {
+            --primary: #4a90e2;
+            --secondary: #f4f7f6;
+            --accent: #2ecc71;
+            --text: #333;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--secondary);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+
+        main {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 400px;
+        }
+
+        header h1 {
+            text-align: center;
+            color: var(--text);
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        input {
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 6px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+
+        input:focus {
+            border-color: var(--primary);
+            outline: none;
+        }
+
+        .controls {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+        }
+
+        button {
+            padding: 12px 5px;
+            cursor: pointer;
+            border: none;
+            border-radius: 6px;
+            background: var(--primary);
+            color: white;
+            font-weight: bold;
+            font-size: 1rem;
+            transition: transform 0.1s, opacity 0.2s;
+        }
+
+        button:hover { opacity: 0.9; }
+        button:active { transform: scale(0.95); }
+
+        .btn-advanced { background: #9b59b6; }
+
+        #result-container {
+            margin-top: 20px;
+            padding: 15px;
+            background: #e8f4fd;
+            border-radius: 6px;
+            text-align: center;
+        }
+
+        #result-display {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: var(--primary);
+            word-break: break-all;
+        }
+
+        @media (max-width: 480px) {
+            main { margin: 10px; padding: 1.5rem; }
+            .controls { grid-template-columns: repeat(2, 1fr); }
+        }
+    </style>
+</head>
+<body>
+
+    <main>
+        <header>
+            <h1> Functional Calculator</h1>
+        </header>
+
+        <section class="input-group">
+            <input type="number" id="num1" placeholder="Enter first number (x)">
+            <input type="number" id="num2" placeholder="Enter second number (y)">
+        </section>
+
+        <section class="controls">
+            <button onclick="handleAddition()">+</button>
+            <button onclick="handleSubtraction()">-</button>
+            <button onclick="handleMultiplication()">*</button>
+            <button onclick="handleDivision()">/</button>
+
+            <button class="btn-advanced" onclick="handleSqrt()" title="Square Root of x">√x</button>
+            <button class="btn-advanced" onclick="handleCbrt()" title="Cube Root of x">∛x</button>
+            <button class="btn-advanced" onclick="handlePower()" title="x to the power of y">xʸ</button>
+            <button style="background:#e74c3c" onclick="clearFields()">C</button>
+        </section>
+
+        <footer id="result-container">
+            <div>Result: <span id="result-display">0</span></div>
+        </footer>
+    </main>
+
+    <script>
+
+        const getValues = () => {
+            const n1 = parseFloat(document.getElementById('num1').value);
+            const n2 = parseFloat(document.getElementById('num2').value);
+            return { n1, n2 };
+        };
+
+        const display = (value) => {
+            const resultElement = document.getElementById('result-display');
+            if (isNaN(value)) {
+                resultElement.innerText = "Please enter valid numbers";
+            } else {
+                // Rounding to 4 decimal places for cleanliness
+                resultElement.innerText = Number.isInteger(value) ? value : value.toFixed(4);
+            }
+        };
+
+        // --- Core Functions ---
+
+        function handleAddition() {
+            const { n1, n2 } = getValues();
+            display(n1 + n2);
+        }
+
+        function handleSubtraction() {
+            const { n1, n2 } = getValues();
+            display(n1 - n2);
+        }
+
+        function handleMultiplication() {
+            const { n1, n2 } = getValues();
+            display(n1 * n2);
+        }
+
+        function handleDivision() {
+            const { n1, n2 } = getValues();
+            if (n2 === 0) {
+                document.getElementById('result-display').innerText = "Cannot divide by 0";
+                return;
+            }
+            display(n1 / n2);
+        }
+
+        // --- Advanced Functions ---
+
+        function handleSqrt() {
+            const { n1 } = getValues();
+            if (n1 < 0) {
+                document.getElementById('result-display').innerText = "Invalid Input (Neg)";
+                return;
+            }
+            display(Math.sqrt(n1));
+        }
+
+        function handleCbrt() {
+            const { n1 } = getValues();
+            display(Math.cbrt(n1));
+        }
+
+        function handlePower() {
+            const { n1, n2 } = getValues();
+            display(Math.pow(n1, n2));
+        }
+
+        function clearFields() {
+            document.getElementById('num1').value = '';
+            document.getElementById('num2').value = '';
+            document.getElementById('result-display').innerText = '0';
+        }
+    </script>
+</body>
+</html>
